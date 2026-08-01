@@ -1,0 +1,646 @@
+:root {
+  --bg: #fff;
+  --panel: #f5f5f5;
+  --sidebar: #fff;
+  --header: #2c3e50;
+  --border: #d0d0d0;
+  --text: #222;
+  --console: #f3f3f3;
+  --consoleText: #1f1f1f;
+  --hover: #e8f2ff;
+  --accent: #0078d7;
+  --dialog: #fff;
+  --dialogBorder: #d0d0d0;
+  --input: #fff;
+  --inputBorder: #bdbdbd;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+  --overlay: rgba(0, 0, 0, 0.35);
+}
+
+body.dark {
+  --bg: #1e1e1e;
+  --panel: #252526;
+  --sidebar: #2d2d30;
+  --header: #1b1b1b;
+  --border: #3c3c3c;
+  --text: #f3f3f3;
+  --console: #111;
+  --consoleText: #fff;
+  --hover: #3a3d41;
+  --dialog: #252526;
+  --dialogBorder: #3c3c3c;
+  --input: #333;
+  --inputBorder: #555;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  --overlay: rgba(0, 0, 0, 0.55);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Segoe UI, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+}
+
+.mobileOnly{
+    display:none;
+}
+
+.mobileNav{
+    display:none;
+}
+
+.header {
+  height: 70px;
+  background: var(--header);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo img {
+  width: 42px;
+  height: 42px;
+}
+
+.logo span {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.container {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+.left {
+  width: 300px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  overflow: auto;
+}
+
+.right{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-width:0;
+
+    min-height:0;
+
+}
+
+.editorTabs{
+
+    display:flex;
+
+    flex-direction:row;
+
+    align-items:center;
+
+    gap:4px;
+
+    padding:4px 8px;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    white-space:nowrap;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+.editorTab{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:6px 12px;
+
+    background:var(--panel);
+
+    border:1px solid var(--border);
+
+    border-bottom:none;
+
+    border-radius:8px 8px 0 0;
+
+    cursor:pointer;
+
+    flex:0 0 auto;
+
+}
+
+.editorTab.active{
+
+    background:var(--bg);
+
+    font-weight:bold;
+
+}
+
+.closeTab{
+
+    width:18px;
+
+    height:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    transition:background .2s,color .2s;
+
+}
+
+.emptyExplorer {
+    padding: 40px 15px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    font-size: 15px;
+    user-select: none;
+}
+
+.closeTab:hover{
+
+    background:#ff3b30;
+
+    color:white;
+
+}
+
+.editorPanel{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:0;
+
+    overflow:hidden;
+
+}
+
+.CodeMirror{
+
+    flex:1;
+
+    height:auto !important;
+
+    min-height:0;
+
+    width:100%;
+
+}
+
+.toolbar,
+.editorTitle {
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+button {
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.console{
+
+    display:flex;
+
+    flex-direction:column;
+
+    height:220px;
+
+    background:var(--console);
+
+    color:var(--consoleText);
+
+    padding:12px;
+
+    border-top:1px solid var(--border);
+
+    overflow:hidden;
+
+}
+
+#output{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    white-space:pre-wrap;
+
+    outline:none;
+
+    padding-top:8px;
+
+    font-family:Consolas, monospace;
+
+}
+
+#mobileConsoleInput{
+
+    display:none;
+
+    margin-top:10px;
+
+    gap:8px;
+
+}
+
+#mobileConsoleInput input{
+
+    flex:1;
+
+}
+
+#mobileConsoleInput button{
+
+    min-width:80px;
+
+}
+
+.context-menu {
+  display: none;
+  position: fixed;
+  min-width: 200px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  z-index: 99999;
+}
+
+#javaFileMenu{
+    position: fixed !important;
+    z-index: 100000 !important;
+}
+
+.context-menu div {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.context-menu div:hover {
+  background: var(--hover);
+}
+
+.dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width:min(420px,95vw);
+  padding: 24px;
+  background: var(--dialog);
+  color: var(--text);
+  border: 1px solid var(--dialogBorder);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  z-index: 5000;
+}
+
+.dialog h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dialog input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--inputBorder);
+  background: var(--input);
+  color: var(--text);
+}
+
+.dialog input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 120, 215, 0.25);
+}
+
+.dialogButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.dialogButtons .primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.dialogButtons .secondary {
+  background: transparent;
+}
+
+#dialogOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(3px);
+  z-index: 4000;
+}
+
+#verticalDivider {
+  width: 6px;
+  background: #444;
+  cursor: col-resize;
+}
+
+#horizontalDivider {
+  height: 6px;
+  background: #444;
+  cursor: row-resize;
+}
+
+#verticalDivider:hover,
+#horizontalDivider:hover {
+  background: var(--accent);
+}
+
+.checkboxRow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin:18px 0;
+
+}
+
+.checkboxRow input[type="checkbox"]{
+
+    width:auto;
+
+    margin:0;
+
+    padding:0;
+
+    border:none;
+
+    box-shadow:none;
+
+    accent-color:#0078d7;
+
+}
+
+.checkboxRow label{
+
+    margin:0;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+}
+
+.error{
+
+    color:#ff4d4f;
+
+    font-size:13px;
+
+    margin-top:6px;
+
+    min-height:18px;
+
+}
+
+.compileError{
+
+    color:#ff5252;
+    font-weight:bold;
+    margin-left:4px;
+
+}
+
+.dialog input.invalid{
+
+    border-color:#ff4d4f !important;
+
+    box-shadow:0 0 0 3px rgba(255,77,79,.15);
+
+}
+
+@media (max-width:768px){
+
+.mobileOnly{
+    display:block;
+}
+
+#mobileConsoleInput{
+
+        display:flex;
+
+    }
+
+#horizontalDivider{
+
+    display:none;
+
+}
+
+.logo span{
+    font-size:20px;
+}
+
+.header{
+
+    padding:0 10px;
+
+}
+
+.mobileNav{
+
+    display:flex;
+
+    justify-content:space-around;
+
+    align-items:center;
+
+    height:50px;
+
+    border-bottom:1px solid var(--border);
+
+    background:var(--panel);
+
+}
+
+.mobileNav button{
+
+    flex:1;
+
+    border:none;
+
+    border-radius:0;
+
+}
+
+.container{
+
+    height:calc(100vh - 120px);
+
+}
+
+.left{
+
+    position:fixed;
+
+    top:120px;
+
+    left:-85%;
+
+    width:80%;
+
+    max-width:320px;
+
+    height:calc(100vh - 120px);
+
+    transition:left .3s ease;
+
+    z-index:3000;
+
+    box-shadow:0 0 20px rgba(0,0,0,.35);
+
+    overflow-y:auto;
+
+}
+
+.left.open{
+
+    left:0;
+
+}
+
+#verticalDivider{
+
+    display:none;
+
+}
+
+.toolbar{
+
+	justify-content:center;
+	overflow-x:auto;
+
+}
+
+.toolbar button{
+
+    flex:1;
+	min-width:120px;
+
+}
+
+.editorTabs{
+
+    font-size:14px;
+	padding:6px;
+
+
+}
+
+.console{
+
+    height:45vh;
+
+}
+
+.dialog{
+
+    width:95vw;
+
+}
+
+button{
+
+	font-size:15px;
+	min-height:44px;
+
+}
+
+.CodeMirror{
+
+    font-size:15px;
+
+}
+
+.left > div:first-child{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+}
+
+#newProjectBtn{
+
+    width:auto;
+    align-self:center;
+}
+
+}

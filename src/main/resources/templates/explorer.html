@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Java IDE</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<link rel="stylesheet" th:href="@{/explorer.css}">
+</head>
+
+<body>
+
+<div id="dialogOverlay"></div>
+
+<div class="header">
+
+    <button id="menuBtn" class="mobileOnly">☰</button>
+
+    <div class="logo">
+        <img th:src="@{/Java.svg}" alt="Java">
+        <span>JavaForge</span>
+    </div>
+
+    <button id="themeBtn" title="Toggle Theme">🌙</button>
+</div>
+
+<div class="mobileNav">
+
+    <button id="showEditor">✏ Editor</button>
+
+    <button id="showConsole">💻 Console</button>
+
+</div>
+
+<div class="container">
+
+    <div th:replace="~{explorerSection :: explorer}"></div>
+
+    <div id="verticalDivider"></div>
+
+    <div class="right">
+
+        <div class="toolbar">
+            <button id="saveBtn">💾 Save</button>
+            <button id="runBtn">▶ Run</button>
+        </div>
+
+		<div id="editorTabs" class="editorTabs">
+
+		</div>
+
+        <div class="editorPanel" id="editorSection">
+            <input type="hidden" id="fileId">
+
+            <textarea id="editor"
+                spellcheck="false"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                placeholder="Select a Java file from the Project Explorer..."></textarea>
+        </div>
+
+        <div id="horizontalDivider"></div>
+
+		<div class="console" id="consoleSection">
+
+		    <h3>Console Output</h3>
+
+		    <div id="output"
+		         tabindex="0"
+		         contenteditable="true">
+		    </div>
+			
+			<div id="mobileConsoleInput">
+
+			        <input
+			            id="mobileInput"
+			            type="text"
+			            placeholder="Enter input...">
+
+			        <button id="sendInputBtn">
+			            Send
+			        </button>
+				
+			</div>
+
+		</div>
+
+    </div>
+
+</div>
+
+<div id="projectMenu" class="context-menu">
+    <div id="newPackage">📦 New Package</div>
+    <div id="renameProject">✏ Rename Project</div>
+	<div id="downloadProject">⬇ Download Project</div>
+    <div id="deleteProject">🗑 Delete Project</div>
+</div>
+
+<div id="packageMenu" class="context-menu">
+    <div id="newJavaClass">☕ New Java Class</div>
+    <div id="newJavaInterface">🔷 New Java Interface</div>
+    <div id="newJavaEnum">🟣 New Java Enum</div>
+    <div id="newJavaRecord">📘 New Java Record</div>
+    <div id="newJavaAnnotation">🏷️ New Java Annotation</div>
+    <div id="renamePackage">✏ Rename Package</div>
+    <div id="deletePackage">🗑 Delete Package</div>
+</div>
+
+<div id="javaFileMenu" class="context-menu">
+    <div id="renameJavaFile">✏ Rename</div>
+    <div id="deleteJavaFile">🗑 Delete</div>
+</div>
+
+<div id="projectDialog" class="dialog">
+    <h3>New Project</h3>
+    <label for="projectName">Project Name</label>
+	<input
+	    id="projectName"
+	    placeholder="Enter project name"
+	    autocomplete="on">
+	<div id="projectNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createProjectBtn">Create</button>
+        <button class="secondary" id="cancelProjectBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="unsavedDialog" class="dialog">
+
+    <h3>Unsaved Changes</h3>
+
+    <p id="unsavedMessage"></p>
+
+    <div class="dialogButtons">
+
+        <button id="saveUnsavedBtn" class="primary">Save</button>
+
+        <button id="dontSaveBtn">Don't Save</button>
+
+        <button id="cancelUnsavedBtn">Cancel</button>
+
+    </div>
+
+</div>
+
+<div id="packageDialog" class="dialog">
+    <h3>New Package</h3>
+    <label for="packageName">Package Name</label>
+    <input id="packageName" placeholder="Enter package name">
+	<div id="packageNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createPackageBtn">Create</button>
+        <button class="secondary" id="cancelPackageBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="renameProjectDialog" class="dialog">
+    <h3>Rename Project</h3>
+    <label for="newProjectName">Project Name</label>
+    <input id="newProjectName">
+	<div id="newProjectNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="renameProjectBtn">Rename</button>
+        <button class="secondary" id="cancelRenameProjectBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="classDialog" class="dialog">
+    <h3>New Java Class</h3>
+    <label for="className">Class Name</label>
+    <input id="className">
+	<div id="classNameError" class="error"></div>
+
+	<div class="checkboxRow">
+
+	    <input
+	        type="checkbox"
+	        id="mainMethod"
+	        checked>
+
+	    <label for="mainMethod">
+
+	        Generate public static void main()
+
+	    </label>
+
+	</div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createClassBtn">Create</button>
+        <button class="secondary" id="cancelClassBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="interfaceDialog" class="dialog">
+    <h3>New Java Interface</h3>
+    <label for="interfaceName">Interface Name</label>
+    <input id="interfaceName">
+	<div id="interfaceNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createInterfaceBtn">Create</button>
+        <button class="secondary" id="cancelInterfaceBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="enumDialog" class="dialog">
+    <h3>New Java Enum</h3>
+
+    <label for="enumName">Enum Name</label>
+
+    <input id="enumName">
+
+    <div id="enumNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createEnumBtn">Create</button>
+        <button class="secondary" id="cancelEnumBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="recordDialog" class="dialog">
+    <h3>New Java Record</h3>
+
+    <label for="recordName">Record Name</label>
+
+    <input id="recordName">
+
+    <div id="recordNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createRecordBtn">Create</button>
+        <button class="secondary" id="cancelRecordBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="annotationDialog" class="dialog">
+    <h3>New Java Annotation</h3>
+
+    <label for="annotationName">Annotation Name</label>
+
+    <input id="annotationName">
+
+    <div id="annotationNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="createAnnotationBtn">Create</button>
+        <button class="secondary" id="cancelAnnotationBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="renamePackageDialog" class="dialog">
+    <h3>Rename Package</h3>
+    <label for="newPackageName">Package Name</label>
+    <input id="newPackageName">
+	<div id="newPackageNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="renamePackageBtn">Rename</button>
+        <button class="secondary" id="cancelRenamePackageBtn">Cancel</button>
+    </div>
+</div>
+
+<div id="renameJavaDialog" class="dialog">
+    <h3>Rename Java File</h3>
+    <label for="newJavaFileName">Java File Name</label>
+    <input id="newJavaFileName">
+	<div id="newJavaFileNameError" class="error"></div>
+
+    <div class="dialogButtons">
+        <button class="primary" id="renameJavaBtn">Rename</button>
+        <button class="secondary" id="cancelRenameJavaBtn">Cancel</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+<script th:src="@{/explorer.js}"></script>
+
+</body>
+</html>

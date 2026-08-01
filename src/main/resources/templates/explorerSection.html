@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="explorer">
+
+<div class="left" id="sidebar">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3>Project Explorer</h3>
+        <button id="newProjectBtn">➕ New Project</button>
+    </div>
+
+    <br>
+
+    <div th:if="${#lists.isEmpty(projects)}" class="emptyExplorer">
+        📂 No Projects
+    </div>
+
+    <details
+        th:each="project : ${projects}"
+        th:attr="data-key='project-'+${project.projectId}">
+
+        <summary class="project"
+                 th:data-id="${project.projectId}"
+                 th:data-name="${project.projectName}">
+            📁 <span th:text="${project.projectName}"></span>
+        </summary>
+
+        <div style="margin-left:20px;">
+
+            <details
+                th:each="pkg : ${project.packages}"
+                th:attr="data-key='package-'+${pkg.packageId}">
+
+                <summary class="package"
+                         th:data-id="${pkg.packageId}"
+                         th:data-name="${pkg.packageName}">
+                    📦 <span th:text="${pkg.packageName}"></span>
+                </summary>
+
+                <div style="margin-left:20px;">
+
+                    <div th:each="file : ${pkg.javaFiles}" class="javaFileRow">
+
+                        <span class="javaIcon">📄</span>
+
+                        <span class="javaFile"
+                              th:data-id="${file.fileId}"
+                              th:data-name="${file.fileName}"
+                              th:text="${file.fileName}">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </details>
+
+        </div>
+
+    </details>
+
+</div>
+
+</th:block>
+
+</html>

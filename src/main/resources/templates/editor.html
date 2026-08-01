@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>Editor</title>
+
+<style>
+
+textarea{
+
+    width:95%;
+    height:600px;
+
+    font-family:Consolas;
+    font-size:16px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2 th:text="${file.fileName}"></h2>
+
+<form>
+
+<textarea th:text="${file.sourceCode}"></textarea>
+
+</form>
+
+</body>
+
+</html>
